@@ -1,23 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom'; // Add the missing import statement for BrowserRouter
-import { Routes, Route } from 'react-router-dom';
 import './index.css';
-import Login from './pages/Login';
-import ProfilePage from './pages/Profile';
 import reportWebVitals from './reportWebVitals';
+import ProfilePage from './pages/Profile';
 
-export default function QuestApp() {
-  return(
-      <BrowserRouter> 
-        <Routes>
-          <Route path="*" element={<Login/>} />
-          <Route path="profile" element={<ProfilePage/>} />
-        </Routes>
-      </BrowserRouter>
-  );
-}
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<QuestApp />);
+root.render(
+  <React.StrictMode>
+    <ProfilePage />
+  </React.StrictMode>
+);
 
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
