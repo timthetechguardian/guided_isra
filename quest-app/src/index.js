@@ -2,12 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import ProfilePage from './pages/Profile';
+// imoprt LoginPage from './pages/Login';
+// import ProfilePage from './pages/Profile';
+import Quest from './pages/Quest';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <ProfilePage />
+    <Quest />
   </React.StrictMode>
 );
 

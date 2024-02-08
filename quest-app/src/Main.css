@@ -341,3 +341,47 @@ h2 {
     border-color: #9e9e9e;
     cursor: pointer;
 }
+
+
+/* Quest (Questionnaire Page) */
+
+
+.PWQ {
+    z-index: 0;
+    /* border-color: (var(--debugHelper)); */
+    /* background-color: #005A9E; */
+    height: 300vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.CWQ {
+    display: flex;
+    background-color: rgb(224, 224, 224);
+    width: 80em;
+    height: fit-content;
+    border-color: (var(--debugHelper));
+    flex-direction: column;
+    padding: 25px;
+    margin-top: 80px;
+    border-radius: 10px;
+}
+
+.CWQ-1 {
+    width: auto;
+    /* background-color: #3c4043; */
+    font-family: "NRL";
+}
+/* Responsive Breakpoints */
+@media screen and (max-width: 768px) {
+    .CWQ {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .PWQ {
+        height: 150vh;
+    }
+}
