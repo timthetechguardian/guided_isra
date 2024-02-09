@@ -8,7 +8,6 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import FormGroup from '@mui/material/FormGroup';
 import FormHelperText from '@mui/material/FormHelperText';
 import Checkbox from '@mui/material/Checkbox';
 import Select from '@mui/material/Select';
@@ -48,7 +47,24 @@ const names1 = [
     'Product Formulas',
     'Product Manufacturing Processes',
     'Product Research and Development',
-]
+];
+
+//Script for last Checkbox
+document.addEventListener('DOMContentLoaded', function() {
+    const prepayForm = document.getElementById('prepay');
+    prepayForm.addEventListener('submit', function(event) {
+        const confirmTermsCheckbox = document.querySelector('form#prepay input[name=confirm_terms]');
+        if (confirmTermsCheckbox.checked) {
+            return true;
+        } else {
+            const confirmTermsHint = document.getElementById('confirm_terms_hint');
+            confirmTermsHint.textContent = 'Please try again - you need to check the box to move on';
+            confirmTermsHint.style.fontWeight = 'bold';
+            event.preventDefault();
+            return false;
+        }
+    });
+});
 
 // Function for Personal Data Dropdown
 function getStyles(name, dataCat, theme) {
@@ -127,7 +143,11 @@ function Quest() {
             {/* Content Wrapper Quest */}
             <div className='CWQ'>
                 {/* CWQ */}
-
+                {/* Title */}
+                <div className='CWQ-1' name="Title">
+                    <h1>Questionnaire</h1>
+                </div>
+                <br/>
 
                 {/* Question */}
 
@@ -135,7 +155,7 @@ function Quest() {
                     {/* CWQ-1 */}
                     <b style={{color:'red'}}>*</b>
                     <b>Please make a list of use cases. They should answer the question: Why do you use this portal/program?</b>
-                    <br/><br/>
+                    <br/>
                 </div>
                 <div className='CWQ-1' name="FreeSizeTextInput">
                     {/* CWQ-2 */}
@@ -156,7 +176,7 @@ function Quest() {
                     />
                 </div>
 
-                <br/>
+                <br/><br/>
 
                 {/* Question */}
                 
@@ -165,7 +185,7 @@ function Quest() {
                     {/* <b style={{color:'red'}}>*</b> */}
                     <b>For additional notes and special features. Please state below :D
                     </b>
-                    <br/><br/>
+                    <br/>
                 </div>
                 <div className='CWQ-1' name="FreeSizeTextInput">
                     {/* CWQ-2 */}
@@ -186,16 +206,16 @@ function Quest() {
                         }}
                     />
                 </div>
-                <br/>
+                <br/><br/>
 
                 {/* Data Picker Dropdown - Personal Data */}
 
                 <div className='CWQ-1' name="Description">
                     {/* CWQ-1 */}
                     <b style={{color:'red'}}>*</b>
-                    <b>Please pick one or more suitable data categories. If you are not sure, please ask your data protection officer. It is either Personal Data or Confitential Business Data or none of them..
+                    <b>Please pick one or more suitable data categories. If you are not sure, please ask your data protection officer. It is either Personal Data or Confidential Business Data or none of them..
                     </b>
-                    <br/><br/>
+                    <br/>
                 </div>
                 <div className='CWQ-1' name="Personal Data Dropdown">
                     {/* CWQ-2 */}
@@ -288,16 +308,15 @@ function Quest() {
                     {/* <br/><br/> */}
                 </div>
                 <div className='CWQ-1' name="Checkboxes">
-                    {/* <FormControlLabel control={<Checkbox />} label="Admin" />  */}
+                    {/* <FormControlLabel control={<Checkbox />} label="Admin" /> */}
                     {/* <FormControlLabel control={<Checkbox />} label="User" /> */}
                     <FormControl
                         required
                         error={error}
                         component="fieldset"
-                        sx={{ m: 3 }}
+                        sx={{ m: 2 }}
                         variant="standard"
                     >
-                        <FormGroup>
                             <FormControlLabel
                                 control={
                                 <Checkbox checked={admin} onChange={handleChange2} name="admin" />
@@ -310,10 +329,170 @@ function Quest() {
                                 }
                                 label="User"
                             />                            
-                        </FormGroup>
                         <FormHelperText>You can only select one</FormHelperText>
                     </FormControl>
                 </div>
+                <br/>
+
+                {/* Question: Multiple users? */}
+
+                <div className='CWQ-1' name="Description">
+                    {/* CWQ-1 */}
+                    <b style={{color:'red'}}>*</b>
+                    <b>Do you use this as a shared user account with other colleaugues?</b>
+                    <br/> 
+                </div>
+                <div className='CWQ-1' name="Checkboxes">
+                        <FormControlLabel control={<Checkbox />} label="Yes" />  
+                        <FormControlLabel control={<Checkbox />} label="No" />
+                </div>
+                <br/>
+
+                {/* Define User Credentials */}
+
+                <div className='CWQ-1' name="Description">
+                    {/* CWQ-1 */}
+                    <b style={{color:'red'}}>*</b>
+                    <b>Please describe your user-credentials<br/>
+                    <i>Username, E-Mail or other... / Password-length</i>
+                    </b>
+                    <br/> 
+                </div>
+                <div className='CWQ-1' name="FreeSizeTextInput">
+                    {/* CWQ-1 */}
+                    <TextField
+                        id="filled-multiline-flexible"
+                        label="Write here"
+                        placeholder='- Describe your credentials here'
+                        multiline
+                        maxRows={2}
+                        variant="filled"
+                        sx={{
+                            minWidth: '100%',
+                            ...(isSmallScreen && {
+                                width: '100%',
+                                maxWidth: '100%',
+                            }),
+                        }}
+                    />
+                </div>
+                <br/><br/>
+
+                {/* Question: Password Complexity? */}
+                <div className='CWQ-1' name="Description">
+                    {/* CWQ-1 */}
+                    <b style={{color:'red'}}>*</b>
+                    <b>How complex is your password?</b>
+                    <br/>
+                </div>
+                <div className='CWQ-1' name="Checkboxes">
+                        <FormControlLabel control={<Checkbox />} label="Very Complex" /> 
+                        <FormControlLabel control={<Checkbox />} label="Complex" />
+                        <FormControlLabel control={<Checkbox />} label="Simple" />
+                        <FormControlLabel control={<Checkbox />} label="Very Simple" />
+                </div>
+                <br/><br/>
+
+                {/* Option 2FA? */}
+
+                <div className='CWQ-1' name="Description">
+                    {/* CWQ-1 */}
+                    <b style={{color:'red'}}>*</b>
+                    <b>Is there an option for a second factor authentication?</b>
+                    <br/>
+                </div>
+                <div className='CWQ-1' name="Checkboxes">
+                        <FormControlLabel control={<Checkbox />} label="Yes" />  
+                        <FormControlLabel control={<Checkbox />} label="No" />
+                </div>
+                <br/><br/>
+
+                {/* Use 2FA? */}
+
+                <div className='CWQ-1' name="Description">
+                    {/* CWQ-1 */}
+                    <b style={{color:'red'}}>*</b>
+                    <b>Do you use a second factor authentication?</b>
+                    <br/>
+                </div>
+                <div className='CWQ-1' name="Checkboxes">
+                        <FormControlLabel control={<Checkbox />} label="Yes"/>
+                        <FormControlLabel control={<Checkbox />} label="No" />
+                        <br/>
+                        <TextField 
+                            id="outlined-basic" 
+                            label="Whats the name?" 
+                            variant="standard" 
+                            placeholder='­Microsoft Azure SSO, SMS, E-Mail, Code'
+                            sx={{minWidth:'30%'}}
+                        />
+                </div>
+                <br/><br/>
+
+
+                {/* Password Change Cycle? */}
+
+                <div className='CWQ-1' name="Description">
+                    {/* CWQ-1 */}
+                    <b style={{color:'red'}}>*</b>
+                    <b>How often do you change your password in a year?</b>
+                    <br/>
+                </div>
+                <div className='CWQ-1' name="Checkboxes">
+                        <FormControlLabel control={<Checkbox />} label="Every 90 days" />  
+                        <FormControlLabel control={<Checkbox />} label="Twice a year" />
+                        <FormControlLabel control={<Checkbox />} label="Once a year" />
+                        <FormControlLabel control={<Checkbox />} label="Never" />
+                </div>
+                <br/><br/>
+
+                {/* Use Passwordmanager? */}
+
+                <div className='CWQ-1' name="Description">
+                    {/* CWQ-1 */}
+                    <b style={{color:'red'}}>*</b>
+                    <b>Do you use a Password Manager?</b>
+                    <br/>
+                </div>
+                <div className='CWQ-1' name="Checkboxes">
+                        <FormControlLabel control={<Checkbox />} label="Yes"/>
+                        <FormControlLabel control={<Checkbox />} label="No" />
+                        <br/>
+                        <TextField 
+                            id="outlined-basic" 
+                            label="Whats the name?" 
+                            variant="standard" 
+                            placeholder='Keepass, Lastpass, 1Password, Bitwarden'
+                            sx={{minWidth:'30%'}}
+                        />
+                </div>
+                <br/><br/>
+
+                {/* Checkbox to confirm the correctness of the provided information */}
+
+                <div className='CWQ-1' name="Description">
+                    {/* CWQ-1 */}
+                    <b style={{color:'red'}}>*</b>
+                    <b>By submitting this form, I confirm that the information provided is correct.</b>
+                    <br/>
+                </div>
+                <div className='CWQ-1' name="Checkboxes">
+                        <FormControlLabel name='confirm_terms' required control={<Checkbox />} label="Yes" />
+                </div>
+                <br/><br/>
+
+                {/* Submit Button */}
+                <div className='CWQ-1' name="SubmitButton">
+                    <button 
+                        className='SSO'
+                        style={{minWidth: '20%', maxWidth:'70%', width:'20%'}}
+                    >
+                        Submit
+                    </button>
+                </div>
+                <br/><br/>
+
+
             </div>
         </div>
     );

@@ -24,7 +24,9 @@ function Login() {
                   <h2>Welcome! Your account has already been created for you.</h2>
                 </div>
                 <div className="W_Mid_Placeholder"/>
-                <button className="SSO" href="/profile">Single Sign-On</button>
+                <button 
+                  className="SSO" 
+                  href="/profile">Single Sign-On</button>
             </div>
           </div>
         </div>
