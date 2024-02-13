@@ -37,7 +37,7 @@
 
 .Wrapper {
     position: relative;
-    width: calc(70% / 2);
+    width: calc(80% / 2);
     height: 100%;
     margin: 0 auto; /* Center the Wrapper to the width of .Left-half */
     background-color: transparent;

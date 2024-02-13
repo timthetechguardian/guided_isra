@@ -2,15 +2,18 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-// imoprt LoginPage from './pages/Login';
+// import LoginPage from './pages/Login';
 // import ProfilePage from './pages/Profile';
-// import Quest from './pages/Quest';
-import FAQ from './pages/faq';
+import Quest from './pages/Quest';
+// import FAQ from './pages/faq';
+import { AlertProvider } from './alerts/useAlert';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <FAQ />
+    <AlertProvider>
+      <Quest />
+    </AlertProvider>
   </React.StrictMode>
 );
 
