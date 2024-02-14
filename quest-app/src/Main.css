@@ -358,7 +358,7 @@ h2 {
 
 .CWQ {
     display: flex;
-    background-color: rgb(224, 224, 224);
+    background-color: rgb(255, 255, 255);
     width: 80em;
     height: fit-content;
     border-color: (var(--debugHelper));

@@ -14,7 +14,6 @@ import Chip from '@mui/material/Chip';
 import TextField from '@mui/material/TextField';
 
 import { useForm } from 'react-hook-form';
-import { useAlert } from '../alerts/useAlert';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -78,30 +77,6 @@ const Quest= () => {
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-    // Alert: Successful Submission
-    const showAlert = useAlert();
-    const handleButtonClick = () => {
-        if (valid) {
-          showAlert('You successfully submitted the questionnaire', 'success');
-        }   else {
-            showAlert('Please fill out the form correctly', 'error');
-        }
-      };
-
-    const [value, setValue] = useState("");
-    const [valid, setValid] = useState(false);
-
-    const handleValidation = (e) => {
-        //set value to user input
-        setValue(e.target.value);
-        
-        //define regex     
-        const reg = new RegExp("[a-zA-Z0-9]");
-        
-        //test whether input is valid
-        setValid(reg.test(e.target.value));
-    };
-
     // Personal Data Dropdown
     const [dataCat, setdataCat] = React.useState([]);
 
@@ -133,7 +108,6 @@ const Quest= () => {
     const { 
         register, 
         handleSubmit, 
-        formState: { errors },
     } = useForm();
     const [data, setData] = useState("");
 
@@ -225,13 +199,10 @@ const Quest= () => {
                             multiline
                             maxRows={8}
                             variant="filled"
-                            aria-invalid={errors.name ? "true" : "false"}
-                            {...register('description', { required: true, maxLength: 10.000 })}
-                            value={value}
-                            onChange={(e) => handleValidation(e)}
-                            error={!valid}
+                            {...register('description', { required: true, maxLength: 10.000, RegExp: /^[a-zA-Z0-9]+$/})}
                             sx={{
                                 minWidth: '100%',
+                                fontFamily: 'NRL',
                                 ...(isSmallScreen && {
                                     width: '100%',
                                     maxWidth: '100%',
@@ -263,7 +234,7 @@ const Quest= () => {
                             multiline
                             maxRows={8}
                             variant="filled"
-                            {...register('features', { required: true })}
+                            {...register('features', { required: false, maxLength: 10.000, RegExp: /^[a-zA-Z0-9]+$/})}
                             sx={{
                                 minWidth: '100%',
                                 fontFamily: 'NRL',
@@ -295,7 +266,6 @@ const Quest= () => {
                             labelId="demo-multiple-chip-label"
                             id="demo-multiple-chip"
                             multiple
-                            {...register('dataCat')}
                             value={dataCat}
                             onChange={handleChange}
                             input={<OutlinedInput id="select-multiple-chip" label="Personal Data Categories" {...register('pData')}/>}
@@ -461,7 +431,7 @@ const Quest= () => {
                             multiline
                             maxRows={2}
                             variant="filled"
-                            {...register('usercred')}
+                            {...register('usercred', { required: true, maxLength: 10.000, RegExp: /^[a-zA-Z0-9]+$/})}
                             sx={{
                                 minWidth: '100%',
                                 ...(isSmallScreen && {
@@ -491,7 +461,7 @@ const Quest= () => {
                                 value={passwCom}
                                 defaultValue='User'
                                 onChange={handlePasswCom}
-                                input={<OutlinedInput id="select-multiple-chip" label="View Choices" {...register('password_complexity')}/>}
+                                input={<OutlinedInput id="select-multiple-chip" label="View Choices" {...register('password_complexity', {required: true})}/>}
                                 >
                                     <MenuItem value={'Very Complex'}>Very Complex</MenuItem>
                                     <MenuItem value={'Complex'}>Complex</MenuItem>
@@ -521,7 +491,7 @@ const Quest= () => {
                                 label='Yes or No'
                                 value={mfa}
                                 onChange={handleMfa}
-                                input={<OutlinedInput id="select-multiple-chip" label="Yes or No" {...register('mfa_option')}/>}
+                                input={<OutlinedInput id="select-multiple-chip" label="Yes or No" {...register('mfa_option', {required: true})}/>}
                                 >
                                     <MenuItem value={'Yes'}>Yes</MenuItem>
                                     <MenuItem value={'No'}>No</MenuItem>
@@ -549,7 +519,7 @@ const Quest= () => {
                                 label='Yes or No'
                                 value={umfa}
                                 onChange={handleUmfa}
-                                input={<OutlinedInput id="select-multiple-chip" label="Yes or No" {...register('mfa')}/>}
+                                input={<OutlinedInput id="select-multiple-chip" label="Yes or No" {...register('mfa', { required: true })}/>}
                                 >
                                     <MenuItem value={'Yes'}>Yes</MenuItem>
                                     <MenuItem value={'No'}>No</MenuItem>
@@ -586,7 +556,7 @@ const Quest= () => {
                                 value={passwChange}
                                 defaultValue='User'
                                 onChange={handlePasswChange}
-                                input={<OutlinedInput id="select-multiple-chip" label="View Choices" {...register('password_change')}/>}
+                                input={<OutlinedInput id="select-multiple-chip" label="View Choices" {...register('password_change', { required: true })}/>}
                                 >
                                     <MenuItem value={'Every 90 days'}>Every 90 days</MenuItem>
                                     <MenuItem value={'Twice a year'}>Twice a year</MenuItem>
@@ -615,7 +585,7 @@ const Quest= () => {
                                 label='Yes or No'
                                 value={passwManag}
                                 onChange={handlePasswManag}
-                                input={<OutlinedInput id="select-multiple-chip" label="Yes or No" {...register('password_manager')}/>}
+                                input={<OutlinedInput id="select-multiple-chip" label="Yes or No" {...register('password_manager', { required: true })}/>}
                                 >
                                     <MenuItem value={'Yes'}>Yes</MenuItem>
                                     <MenuItem value={'No'}>No</MenuItem>
@@ -651,7 +621,6 @@ const Quest= () => {
                     {/* Submit Button */}
                     <div className='CWQ-1' name="SubmitButton" style={{marginTop:'3vh'}}>
                         <button 
-                            onClick={handleButtonClick}
                             className='SSO'
                             style={{minWidth: '20%', maxWidth:'70%', width:'20%'}}
                             type='submit'
