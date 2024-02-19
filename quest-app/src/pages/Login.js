@@ -1,6 +1,6 @@
 import './../Main.css';
 import wallp from './../img/peri_wallp.jpg';
-
+import signInButton from '../components/signInButton';
 
 function Login() {
   return (
@@ -24,9 +24,7 @@ function Login() {
                   <h2>Welcome! Your account has already been created for you.</h2>
                 </div>
                 <div className="W_Mid_Placeholder"/>
-                <button 
-                  className="SSO" 
-                  href="/profile">Single Sign-On</button>
+                  <signInButton className="SSO" href="/profile">Single-Sign-On</signInButton>
             </div>
           </div>
         </div>

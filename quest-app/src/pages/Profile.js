@@ -27,7 +27,7 @@ function ProfilePage() {
                             </div>
                             <div className="Grid1"/>
                             <div className="Grid1">
-                                <button className="button-17">Create New</button>
+                                <button className="button-17">Log Out</button>
                             </div>
                         </div>
                     </div>
@@ -38,8 +38,7 @@ function ProfilePage() {
                 </div> 
                 <div className="RightSideOverlapping">
                     <div className="RightSideContent">
-                        <div className="Partition_L_1">
-                        </div>
+                        {/* <div className="Partition_L_1"/> */}
                         <div className="Partition_L_2">
                             <div className="PL2_TopSpacing">
                             </div>

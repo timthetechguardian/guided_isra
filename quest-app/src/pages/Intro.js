@@ -1,40 +1,90 @@
-import { useState } from "react";
+import React, { useState, UseEffect } from 'react';
 
+const VideoPlayer = ({ videoSources, onBack, onNext }) => {
+  const [videoIndex, setVideoIndex] = useState(0);
+  const [videoPlayable, setVideoPlayable] = useState(false);
+  const [videoEnded, setVideoEnded] = useState(false);
+  const [showNextButton, setShowNextButton] = useState(false);
 
-const Video = () => {
-  const [src, setSrc] = useState("../vid/samplevid.mp4");
-
-  const handleChange = (event) => {
-    try {
-      // Get the uploaded file
-      const file = event.target.files[0];
-
-      // Transform file into blob URL
-      setSrc(URL.createObjectURL(file));
-    } catch (error) {
-      console.error(error);
+  const handleVideoError = () => {
+    if (videoIndex < videoSources.length - 1) {
+      // Try the next video format
+      setVideoIndex(videoIndex + 1);
+    } else {
+      // No video formats worked
+      setVideoPlayable(false);
+      setVideoEnded(true);
     }
   };
-    const handleVideoEnded = () => {
-        // Show the popup after the video is finished
-        // Code to show the popup goes here
-    };
 
-    const handleRestartVideo = () => {
-        // Code to restart the video from the beginning goes here
-    };
+  const handleVideoCanPlay = () => {
+    setVideoPlayable(true);
+  };
 
-    const handleLeaveIntro = () => {
-        // Code to navigate away from the current intro page goes here
-    };
+  const handleVideoEnded = () => {
+  if (videoEnded) {
+    showNextButton(true);
+  }
+  else {
+    UseEffect(() => {
+      const timer = setTimeout(() => {
+        setShowNextButton(true);
+      }, 120000); // 2 minutes
+
+      return () => clearTimeout(timer);
+    }, []);
+  }
+  };
 
   return (
-    <>
-      <video src={src} controls width="100%">
-        Sorry, your browser doesn't support embedded videos.
-      </video>
-      <input type="file" onChange={handleChange} />
-    </>
+    <div>
+      {videoPlayable ? (
+        <video
+          width="100%"
+          autoPlay
+          muted
+          controls={false}
+          onEnded={handleVideoEnded}
+          onCanPlay={handleVideoCanPlay}
+          onError={handleVideoError}
+          style={{ marginBottom: '20px' }} // Leave some space for buttons
+        >
+          <source src={videoSources[videoIndex]} type={`video/${videoSources[videoIndex].split('.').pop()}`} />
+          Your browser does not support the video tag {`video/${videoSources[videoIndex].split('.').pop()}`}.
+        </video>
+      ) : (
+        <p>Video playback is not supported on your browser (Type: {`${videoSources[videoIndex].split('.').pop()}`}).</p>
+      )}
+
+      <button onClick={onBack}>Back</button>
+      <button onClick={onNext} value={videoEnded}>Next</button>
+    </div>
+  );
+};
+
+const Video = () => {
+  const videoSources = [
+    '/vid/samplevid.mp4', 
+    '/vid/samplevid.mpeg',
+    '/vid/samplevid.ogv',
+    '/vid/samplevid.webm', // Note: AVI is generally not supported for direct browser playback
+  ];
+
+  const handleBack = () => {
+    console.log('Back button clicked');
+  };
+
+  const handleNext = () => {
+    console.log('Next button clicked');
+    // Implement the logic to go to the next page or video here
+  };
+
+  return (
+    <VideoPlayer
+      videoSources={videoSources}
+      onBack={handleBack}
+      onNext={handleNext}
+    />
   );
 };
 
