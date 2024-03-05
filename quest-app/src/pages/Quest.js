@@ -74,6 +74,14 @@ function getStyles1(name, confBus, theme) {
 // Main Function
 const Quest= () => {
 
+    const callApi = (data) => {
+        fetch('http://localhost:7071/api/space_runner', { method: 'POST' })
+          .then(data => data.json()) // Parsing the data into a JavaScript object
+          .then(json => alert(JSON.stringify(json))) // Displaying the stringified data in an alert popup
+          .catch(error => console.error(error)) // Catching errors
+
+      }
+
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -209,8 +217,6 @@ const Quest= () => {
                                 }),
                             }}
                         >
-                            
-
                         </TextField>
                     </div>
 
@@ -617,19 +623,20 @@ const Quest= () => {
                                 />
                     </div>
                     <br/><br/>
-
+                    <a href="/faq" style={{ cursor:"pointer" }}>Click here to see the FAQs</a>
                     {/* Submit Button */}
                     <div className='CWQ-1' name="SubmitButton" style={{marginTop:'3vh'}}>
                         <button 
                             className='SSO'
                             style={{minWidth: '20%', maxWidth:'70%', width:'20%'}}
                             type='submit'
+                            onClick={handleSubmit({data}, callApi)}
                         >
                             Submit
                         </button>
                     </div>
                     <br/><br/>
-                    <p>{data}</p>
+                    {/* <p>{data}</p> */}
                 </div>
             </div>
         </form>

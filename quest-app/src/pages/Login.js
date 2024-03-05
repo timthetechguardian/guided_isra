@@ -1,8 +1,10 @@
 import './../Main.css';
 import wallp from './../img/peri_wallp.jpg';
-import signInButton from '../components/signInButton';
+import { useHistory } from 'react-router-dom';
 
-function Login() {
+export default function Login() {
+  const history = useHistory();
+  const handleClick = () => history.push('/intro');
   return (
     <div className="App">
       <div className="MainContainer">
@@ -24,7 +26,7 @@ function Login() {
                   <h2>Welcome! Your account has already been created for you.</h2>
                 </div>
                 <div className="W_Mid_Placeholder"/>
-                  <signInButton className="SSO" href="/profile">Single-Sign-On</signInButton>
+                  <button className="SSO" href="/profile" onClick={handleClick}>Single-Sign-On</button>
             </div>
           </div>
         </div>
@@ -32,5 +34,3 @@ function Login() {
     </div>
   );
 }
-
-export default Login;

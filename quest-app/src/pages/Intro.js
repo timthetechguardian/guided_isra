@@ -1,6 +1,8 @@
 import React, { useState, UseEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 
 const VideoPlayer = ({ videoSources, onBack, onNext }) => {
+
   const [videoIndex, setVideoIndex] = useState(0);
   const [videoPlayable, setVideoPlayable] = useState(false);
   const [videoEnded, setVideoEnded] = useState(false);
@@ -63,6 +65,8 @@ const VideoPlayer = ({ videoSources, onBack, onNext }) => {
 };
 
 const Video = () => {
+  const history = useHistory();
+
   const videoSources = [
     '/vid/samplevid.mp4', 
     '/vid/samplevid.mpeg',
@@ -70,14 +74,9 @@ const Video = () => {
     '/vid/samplevid.webm', // Note: AVI is generally not supported for direct browser playback
   ];
 
-  const handleBack = () => {
-    console.log('Back button clicked');
-  };
+  const handleBack = () => history.push('/login');
 
-  const handleNext = () => {
-    console.log('Next button clicked');
-    // Implement the logic to go to the next page or video here
-  };
+  const handleNext = () => history.push('/profile');
 
   return (
     <VideoPlayer

@@ -1,10 +1,13 @@
 import React from 'react';
 import './../Main.css';
+import { useHistory } from 'react-router-dom';
 
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 function ProfilePage() {
     const items = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5']; // Replace with your actual data
+    const history = useHistory();
+    const handleClick = () => history.push('/quest');
 
     return (
         <div className='ParentWrapper'>
@@ -46,9 +49,17 @@ function ProfilePage() {
                             <ul className='P_Q_List'>
                                 {items.map((item, index) => (
                                     // Profile Questionnaire List Item
-                                    <button style={{backgroundColor:"transparent", borderColor:"transparent", cursor:'pointer', margin:'0', padding:'0'}} type='button'>
-                                        <li key={index} className='PGL_Item'>
+                                    <button  
+                                        style={{backgroundColor:"transparent", borderColor:"transparent", cursor:'pointer', margin:'0', padding:'0'}}
+                                        type='button'
+                                        onClick={handleClick}
+                                    >
+                                        <li 
+                                            key={index} 
+                                            className='PGL_Item'
+                                        >
                                             <p style={{fontSize:"22px", fontFamily:'NRR'}}>Questionnaire XYZ</p>
+                                            <link to="/quest"></link>
                                         </li>
                                     </button>
                                 ))}
