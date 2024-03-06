@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, Component} from 'react';
 import './../Main.css';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -14,6 +14,33 @@ import Chip from '@mui/material/Chip';
 import TextField from '@mui/material/TextField';
 
 import { useForm } from 'react-hook-form';
+
+
+class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            apiResponse: ""
+        };
+    }
+    callAPI() {
+        fetch("http://localhost:3001/quest")
+            .then(res => res.text())
+            .then(res => this.setState({ apiResponse: res }))
+            .catch(err => err);
+    }
+    componentWillMount() {
+        this.callAPI();
+    }
+    render() {
+        return (
+            <div>
+                <p>{this.state.apiResponse}</p>
+            </div>
+        );
+    }
+}
+
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -637,6 +664,7 @@ const Quest= () => {
                     </div>
                     <br/><br/>
                     {/* <p>{data}</p> */}
+                    <App />
                 </div>
             </div>
         </form>

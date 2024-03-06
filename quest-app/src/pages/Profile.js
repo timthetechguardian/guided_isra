@@ -1,11 +1,40 @@
-import React from 'react';
+import React, { Component } from 'react';
 import './../Main.css';
 import { useHistory } from 'react-router-dom';
 
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
+class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            apiResponse: ""
+        };
+    }
+
+    callAPI() {
+        fetch("http://localhost:3001/profile")
+            .then(res => res.text())
+            .then(res => this.setState({ apiResponse: res }))
+            .catch(err => err);
+    }
+
+    componentWillMount() {
+        this.callAPI();
+    }
+
+    render() {
+        return (
+            <div>
+                <p>{this.state.apiResponse}</p>
+            </div>
+        );
+    }
+}
+
 function ProfilePage() {
-    const items = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5']; // Replace with your actual data
+    
+    const items = [<App />]; // Replace with your actual data
     const history = useHistory();
     const handleClick = () => history.push('/quest');
 
@@ -58,7 +87,7 @@ function ProfilePage() {
                                             key={index} 
                                             className='PGL_Item'
                                         >
-                                            <p style={{fontSize:"22px", fontFamily:'NRR'}}>Questionnaire XYZ</p>
+                                            <p style={{fontSize:"22px", fontFamily:'NRR'}}>xyz</p>
                                             <link to="/quest"></link>
                                         </li>
                                     </button>
