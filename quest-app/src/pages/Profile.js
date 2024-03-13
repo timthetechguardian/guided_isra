@@ -1,42 +1,29 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import './../Main.css';
 import { useHistory } from 'react-router-dom';
-
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-
-class App extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            apiResponse: ""
-        };
-    }
-
-    callAPI() {
-        fetch("http://localhost:3001/profile")
-            .then(res => res.text())
-            .then(res => this.setState({ apiResponse: res }))
-            .catch(err => err);
-    }
-
-    componentWillMount() {
-        this.callAPI();
-    }
-
-    render() {
-        return (
-            <div>
-                <p>{this.state.apiResponse}</p>
-            </div>
-        );
-    }
-}
+import FormDialog from '../components/formDialog';
 
 function ProfilePage() {
-    
-    const items = [<App />]; // Replace with your actual data
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+       async function fetchData() {
+              const response = await fetch('http://localhost:5050/profile');
+              if (!response.ok) {
+                  const message = `An error occured: ${response.statusText}`;
+                  console.error(message);
+                  return;
+              }
+              const data = await response.json();
+              setData(data);
+       }
+       fetchData();
+       return;
+    }, [data.length]);
+
+
     const history = useHistory();
-    const handleClick = () => history.push('/quest');
+    const handleClick = () => history.push(`/quest`);
 
     return (
         <div className='ParentWrapper'>
@@ -47,9 +34,11 @@ function ProfilePage() {
                         <div className="Partition_1_W">
                             <div className="Grid1" style={{alignItems:'center'}}>
                                 <div name="ProfilePic">
-                                    <button style={{backgroundColor:"transparent", borderColor:"transparent", cursor:'pointer', margin:'0', padding:'0'}}>
+                                    {/* Profile Button insert here */}
+                                    {/* <button style={{backgroundColor:"transparent", borderColor:"transparent", cursor:'pointer', margin:'0', padding:'0'}}>
                                         <AccountCircleIcon sx={{ fontSize: 50 }}/>
-                                    </button>
+                                    </button> */}
+                                    <FormDialog />
                                 </div>
                             </div>
                             <div className="Grid1">
@@ -76,7 +65,7 @@ function ProfilePage() {
                             </div>
                             {/* Profile Questionnaire List */}
                             <ul className='P_Q_List'>
-                                {items.map((item, index) => (
+                                {data.map(item=> (
                                     // Profile Questionnaire List Item
                                     <button  
                                         style={{backgroundColor:"transparent", borderColor:"transparent", cursor:'pointer', margin:'0', padding:'0'}}
@@ -84,10 +73,10 @@ function ProfilePage() {
                                         onClick={handleClick}
                                     >
                                         <li 
-                                            key={index} 
+                                            key={item._id} 
                                             className='PGL_Item'
                                         >
-                                            <p style={{fontSize:"22px", fontFamily:'NRR'}}>xyz</p>
+                                            <p style={{fontSize:"22px", fontFamily:'NRR'}}>Questionnaire: {item.asset_name}</p>
                                             <link to="/quest"></link>
                                         </li>
                                     </button>

@@ -1,19 +1,15 @@
-const express = require('express');
-const router = express.Router();
-const Model = require('../../models/model');
+import express from 'express';
 
-router.get('/', async (req, res) => {
-    // res.send('This is profile route');
-    // this gets executed when user visits http://localhost:3001/profile
-    let collection = await db.collection('questionnaires');
+import db from '../../db/connection.js';
+
+import { ObjectId } from 'mongodb';
+
+const router1 = express.Router();
+
+router1.get('/', async (req, res) => {
+    let collection = await db.collection("questionnaires");
     let results = await collection.find({}).toArray();
     res.send(results).status(200);
 });
 
-// Add rules when using MSAL
-router.get('/101', (req, res) => {
-    res.send('This is profile 101 route');
-    // this gets executed when user visits http://localhost:3001/profile/101
-});
-
-module.exports = router;
+export default router1;

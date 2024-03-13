@@ -1,4 +1,4 @@
-import React, {useState, Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import './../Main.css';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -13,34 +13,7 @@ import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
 import TextField from '@mui/material/TextField';
 
-import { useForm } from 'react-hook-form';
-
-
-class App extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            apiResponse: ""
-        };
-    }
-    callAPI() {
-        fetch("http://localhost:3001/quest")
-            .then(res => res.text())
-            .then(res => this.setState({ apiResponse: res }))
-            .catch(err => err);
-    }
-    componentWillMount() {
-        this.callAPI();
-    }
-    render() {
-        return (
-            <div>
-                <p>{this.state.apiResponse}</p>
-            </div>
-        );
-    }
-}
-
+import { useParams, useHistory } from 'react-router-dom';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -100,112 +73,155 @@ function getStyles1(name, confBus, theme) {
 
 // Main Function
 const Quest= () => {
-
-    const callApi = (data) => {
-        fetch('http://localhost:7071/api/space_runner', { method: 'POST' })
-          .then(data => data.json()) // Parsing the data into a JavaScript object
-          .then(json => alert(JSON.stringify(json))) // Displaying the stringified data in an alert popup
-          .catch(error => console.error(error)) // Catching errors
-
-      }
-
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-    // Personal Data Dropdown
-    const [dataCat, setdataCat] = React.useState([]);
+    const [form, setForm] = useState({
+        asset_name: "",
+        asset_description: "",
+        additional_notes: "",
+        personal_data_cat: [],
+        confidential_business_data_cat: [],
+        no_data_cat: "",
+        userkind: "",
+        shared_user: "",
+        usercred: "",
+        password_complex: "",
+        mfa_opt: "",
+        mfa_use: "",
+        mfa_name: "",
+        passwd_change: "",
+        passwdmng_use: "",
+        passwdmg_name: "",
+        submForm: "",
+    });
+    const [isNew, setIsNew] = useState(true);
+    const params = useParams();
+    const history = useHistory();
+    // ???
+    useEffect(() => {
+        async function fetchData() {
+            const id = params.id?.toString() || undefined;
+            if (!id) return;
+            setIsNew(false);
+            const response = await fetch(
+                `http://localhost:5050/quest/${params.id.toString()}`
+            );
+            if (!response.ok) {
+                const message = `An error occured: ${response.statusText}`;
+                console.error(message);
+                return;
+            }
+            const quest = await response.json();
+            if (!quest) {
+                console.warn(`Document with id ${id} not found!`);
+                history.push("/");
+                return;
+            }
+            setForm(quest);
+        }
+        fetchData();
+        return;
+    }, [params.id, history]);
 
-    // Confidential Business Data Dropdown
-    const [confBus, setconfBus] = React.useState([]);
-
-    // Multiple Users Dropdown
-    const [usertype, setUsertype] = React.useState("");
+    // These methods will update the state properties
+    function updateForm(value) {
+        return setForm ((prev) => {
+            return { ...prev, ...value };        
+        });
+    }
     
-    // Multiple Users Dropdown
-    const [mult, setMult] = React.useState("");
-
-    // Handle Password Complexity Dropdown
-    const [passwCom, setPasswCom] = React.useState("");
-
-    // Handle Option MFA Dropdown
-    const [mfa, setMfa] = React.useState("");
-
-    // Handle Use MFA Dropdown
-    const [umfa, setUmfa] = React.useState("");
-
-    // Handle Password Change Cycle Dropdown
-    const [passwChange, setPasswChange] = React.useState("");
-
-    // Handle Use Passwordmanager Dropdown
-    const [passwManag, setPasswManag] = React.useState("");
-
-    // React Hook Form
-    const { 
-        register, 
-        handleSubmit, 
-    } = useForm();
-    const [data, setData] = useState("");
-
-    // Handle Data Picker Dropdown - Personal Data
+   
+    // This function handles the submission of the form
+    //                    Argument missing
+    async function onSubmit(event) {
+        event.preventDefault();
+        const quest = { ...form };
+        try {
+            let response;
+            if (isNew) {
+                response = await fetch('http://localhost:5050/quest', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(quest),
+                });
+            } else {
+                response = await fetch(`http://localhost:5050/quest/${params.id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(quest),
+                });
+            }
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+        } catch (error) {
+            console.error('A problem occured adding or updating a document: ', error);
+        } finally {
+            setForm({
+                asset_name: "",
+                asset_description: "",
+                additional_notes: "",
+                personal_data_cat: [],
+                confidential_business_data_cat: [],
+                no_data_cat: false,
+                userkind: "",
+                shared_user: "",
+                usercred: "",
+                password_complex: "",
+                mfa_opt: "",
+                mfa_use: "",
+                mfa_name: "",
+                passwd_change: "",
+                passwdmng_use: "",
+                passwdmg_name: "",
+                submForm: false,
+            });
+            history.push("/");
+        }
+    }
+    
+    // Dropdown Handlers
+    const [dataCat, setdataCat] = useState([]);
     const handleChange = (event) => {
         const {
-          target: { value },
+            target: { value },
         } = event;
         setdataCat(
-          // On autofill we get a stringified value.
-          typeof value === 'string' ? value.split(',') : value,
+            typeof value === 'string' ? value.split(',') : value,
         );
-      };
+    };
 
-    // Handle Data Picker Dropdown - Confidential Business Data
+    const [confBus, setconfBus] = useState([]);
     const handleChange1 = (event) => {
         const {
-          target: { value },
+            target: { value },
         } = event;
         setconfBus(
-          // On autofill we get a stringified value.
-          typeof value === 'string' ? value.split(',') : value,
-        );
-      }
+            typeof value === 'string' ? value.split(',') : value,
+        );    
+    };
 
-    // Handle User Type Dropdown
-    const handleUsertype = (event) => {
-        setUsertype(event.target.value);
-        };
+    // Checkbox Handler
+    const [checked, setChecked] = useState(false);
+    const handleChecked = () => {
+        setChecked((prev) => !prev);
+        if (checked === true) {
+            updateForm({ no_data_cat: "None of the above" });
+        } else {
+            updateForm({ no_data_cat: "" });
+        }
+    };
 
-    // Handle Multiple Users Dropdown
-    const handleMult = (event) => {
-        setMult(event.target.value);
-      };
-
-    // Handle Password Complexity Dropdown
-    const handlePasswCom = (event) => {
-        setPasswCom(event.target.value);
-      };
-
-    // Handle Option MFA Dropdown
-    const handleMfa = (event) => {
-        setMfa(event.target.value);
-      };
-
-    // Handle Use MFA Dropdown
-    const handleUmfa = (event) => {
-        setUmfa(event.target.value);
-      };    
-
-    // Handle Password Change Cycle Dropdown
-    const handlePasswChange = (event) => {
-        setPasswChange(event.target.value);
-      };
-
-    // Handle Use Passwordmanager Dropdown
-    const handlePasswManag = (event) => {
-        setPasswManag(event.target.value);
-      };
 
     return(
         // Parent Wrapper Quest
-        <form onSubmit={handleSubmit((data) => setData(JSON.stringify(data)))}>
+        <form onSubmit={onSubmit}>
+            {/* {handleSubmit((data) => setData(JSON.stringify(data)))} */}
             <div className='PWQ'>
                 {/* PWQ */}
                 {/* Content Wrapper Quest */}
@@ -234,7 +250,8 @@ const Quest= () => {
                             multiline
                             maxRows={8}
                             variant="filled"
-                            {...register('description', { required: true, maxLength: 10.000, RegExp: /^[a-zA-Z0-9]+$/})}
+                            value={form.asset_description}
+                            onChange={(event) => updateForm({ asset_description: event.target.value })}
                             sx={{
                                 minWidth: '100%',
                                 fontFamily: 'NRL',
@@ -267,7 +284,8 @@ const Quest= () => {
                             multiline
                             maxRows={8}
                             variant="filled"
-                            {...register('features', { required: false, maxLength: 10.000, RegExp: /^[a-zA-Z0-9]+$/})}
+                            value={form.additional_notes}
+                            onChange={(event) => updateForm({ additional_notes: event.target.value })}
                             sx={{
                                 minWidth: '100%',
                                 fontFamily: 'NRL',
@@ -299,9 +317,15 @@ const Quest= () => {
                             labelId="demo-multiple-chip-label"
                             id="demo-multiple-chip"
                             multiple
-                            value={dataCat}
-                            onChange={handleChange}
-                            input={<OutlinedInput id="select-multiple-chip" label="Personal Data Categories" {...register('pData')}/>}
+                            handleChange={handleChange}
+                            input={
+                                <OutlinedInput 
+                                    id="select-multiple-chip" 
+                                    label="Personal Data Categories"
+                                    value={form.personal_data_cat}
+                                    onChange={(event) => updateForm({ personal_data_cat: event.target.value })}
+                                />
+                            }
                             renderValue={(selected) => (
                                 <Box 
                                 sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}
@@ -313,15 +337,16 @@ const Quest= () => {
                             )}
                             MenuProps={MenuProps}
                             >
-                            {names.map((name) => (
-                                <MenuItem
-                                key={name}
-                                value={name}
-                                style={getStyles(name, dataCat, theme)}
-                                >
-                                {name}
-                                </MenuItem>
-                            ))}
+                                {names.map((name) => (
+                                    <MenuItem
+                                    key={name}
+                                    value={name}
+
+                                    style={getStyles(name, dataCat, theme)}
+                                    >
+                                        {name}
+                                    </MenuItem>
+                                ))}
                             </Select>
                         </FormControl>
                     </div>
@@ -342,17 +367,16 @@ const Quest= () => {
                         labelId="demo-multiple-chip-label"
                         id="demo-multiple-chip"
                         multiple
-                        value={confBus}
                         onChange={handleChange1}
                         input={<OutlinedInput 
                             id="select-multiple-chip" 
                             label="Confidential Business Data Categories"
-                            {...register('cData')}
+                            value={form.confidential_business_data_cat}
+                            onChange={(event) => updateForm({ confidential_business_data_cat: event.target.value })}
                             />}
                         renderValue={(selected) => (
                             <Box 
                             sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}
-                            
                             >
                             {selected.map((value) => (
                                 <Chip key={value} label={value} />
@@ -361,15 +385,15 @@ const Quest= () => {
                         )}
                         MenuProps={MenuProps}
                         >
-                        {names1.map((name) => (
-                            <MenuItem
-                            key={name}
-                            value={name}
-                            style={getStyles1(name, confBus, theme)}
-                            >
-                            {name}
-                            </MenuItem>
-                        ))}
+                            {names1.map((name) => (
+                                <MenuItem
+                                key={name}
+                                value={name}
+                                style={getStyles1(name, confBus, theme)}
+                                >
+                                    {name}
+                                </MenuItem>
+                            ))}
                         </Select> 
                     </FormControl>
                     </div>
@@ -378,10 +402,19 @@ const Quest= () => {
                     {/* Checkbox - None of the above */}
 
                     <div className='CWQ-1' name="Description" style={{marginTop:'0vh'}}>
-                        &nbsp;&nbsp;<FormControlLabel 
-                                control={<Checkbox {...register('nData')}/>} 
+                        &nbsp;&nbsp;
+                            <FormControlLabel 
+                                control={
+                                    <Checkbox 
+                                        checked={form.no_data_cat === "None of the above"}
+                                        onChange={(event) => {
+                                            handleChecked()
+                                            updateForm({ no_data_cat: event.target.value })
+                                        }}
+                                    />
+                                }   
                                 label="None of the above" 
-                                />  
+                            />  
                     </div>
 
 
@@ -404,10 +437,15 @@ const Quest= () => {
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 label='Yes or No'
-                                value={usertype}
                                 defaultValue='User'
-                                onChange={handleUsertype}
-                                input={<OutlinedInput id="select-multiple-chip" label="Yes or No" {...register('usertype')}/>}
+                                input={
+                                    <OutlinedInput 
+                                        id="select-multiple-chip" 
+                                        label="Yes or No"
+                                        value={form.userkind}
+                                        onChange={(event) => updateForm({ userkind: event.target.value })}
+                                    />
+                                }
                                 >
                                     <MenuItem value={'Admin'}>Admin</MenuItem>
                                     <MenuItem value={'User'}>User</MenuItem>
@@ -433,9 +471,14 @@ const Quest= () => {
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 label='Yes or No'
-                                value={mult}
-                                onChange={handleMult}
-                                input={<OutlinedInput id="select-multiple-chip" label="Yes or No" {...register('sharedUser')}/>}
+                                input={
+                                    <OutlinedInput 
+                                        id="select-multiple-chip" 
+                                        label="Yes or No"
+                                        value={form.shared_user}
+                                        onChange={(event) => updateForm({ shared_user: event.target.value })}
+                                    />
+                                }
                                 >
                                     <MenuItem value={'Yes'}>Yes</MenuItem>
                                     <MenuItem value={'No'}>No</MenuItem>
@@ -464,7 +507,8 @@ const Quest= () => {
                             multiline
                             maxRows={2}
                             variant="filled"
-                            {...register('usercred', { required: true, maxLength: 10.000, RegExp: /^[a-zA-Z0-9]+$/})}
+                            value={form.usercred}
+                            onChange={(event) => updateForm({ usercred: event.target.value })}
                             sx={{
                                 minWidth: '100%',
                                 ...(isSmallScreen && {
@@ -491,10 +535,15 @@ const Quest= () => {
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 label='View Choices'
-                                value={passwCom}
                                 defaultValue='User'
-                                onChange={handlePasswCom}
-                                input={<OutlinedInput id="select-multiple-chip" label="View Choices" {...register('password_complexity', {required: true})}/>}
+                                input={
+                                    <OutlinedInput 
+                                        id="select-multiple-chip"
+                                        label="View Choices"
+                                        value={form.password_complex}
+                                        onChange={(event) => updateForm({ password_complex: event.target.value })}
+                                    />
+                                }
                                 >
                                     <MenuItem value={'Very Complex'}>Very Complex</MenuItem>
                                     <MenuItem value={'Complex'}>Complex</MenuItem>
@@ -522,9 +571,14 @@ const Quest= () => {
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 label='Yes or No'
-                                value={mfa}
-                                onChange={handleMfa}
-                                input={<OutlinedInput id="select-multiple-chip" label="Yes or No" {...register('mfa_option', {required: true})}/>}
+                                input={
+                                    <OutlinedInput 
+                                        id="select-multiple-chip"
+                                        label="Yes or No"
+                                        value={form.mfa_opt}
+                                        onChange={(event) => updateForm({ mfa_opt: event.target.value })}
+                                    />
+                                }
                                 >
                                     <MenuItem value={'Yes'}>Yes</MenuItem>
                                     <MenuItem value={'No'}>No</MenuItem>
@@ -550,9 +604,14 @@ const Quest= () => {
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 label='Yes or No'
-                                value={umfa}
-                                onChange={handleUmfa}
-                                input={<OutlinedInput id="select-multiple-chip" label="Yes or No" {...register('mfa', { required: true })}/>}
+                                input={
+                                    <OutlinedInput
+                                        id="select-multiple-chip"
+                                        label="Yes or No"
+                                        value={form.mfa_use}
+                                        onChange={(event) => updateForm({ mfa_use: event.target.value })}
+                                    />
+                                }
                                 >
                                     <MenuItem value={'Yes'}>Yes</MenuItem>
                                     <MenuItem value={'No'}>No</MenuItem>
@@ -564,7 +623,8 @@ const Quest= () => {
                                 label="Whats the name?" 
                                 variant="standard" 
                                 placeholder='­Microsoft Azure SSO, SMS, E-Mail, Code'
-                                {...register('umfaExa')}
+                                value={form.mfa_name}
+                                onChange={(event) => updateForm({ mfa_name: event.target.value })}
                                 sx={{minWidth:'30%'}}
                             />
                     </div>
@@ -586,10 +646,15 @@ const Quest= () => {
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 label='View Choices'
-                                value={passwChange}
                                 defaultValue='User'
-                                onChange={handlePasswChange}
-                                input={<OutlinedInput id="select-multiple-chip" label="View Choices" {...register('password_change', { required: true })}/>}
+                                input={
+                                    <OutlinedInput
+                                        id="select-multiple-chip"
+                                        label="View Choices"
+                                        value={form.passwd_change}
+                                        onChange={(event) => updateForm({ passwd_change: event.target.value })}
+                                    />
+                                }
                                 >
                                     <MenuItem value={'Every 90 days'}>Every 90 days</MenuItem>
                                     <MenuItem value={'Twice a year'}>Twice a year</MenuItem>
@@ -616,9 +681,14 @@ const Quest= () => {
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 label='Yes or No'
-                                value={passwManag}
-                                onChange={handlePasswManag}
-                                input={<OutlinedInput id="select-multiple-chip" label="Yes or No" {...register('password_manager', { required: true })}/>}
+                                input={
+                                    <OutlinedInput
+                                        id="select-multiple-chip"
+                                        label="Yes or No"
+                                        value={form.passwdmng_use}
+                                        onChange={(event) => updateForm({ passwdmng_use: event.target.value })}
+                                    />
+                                }
                                 >
                                     <MenuItem value={'Yes'}>Yes</MenuItem>
                                     <MenuItem value={'No'}>No</MenuItem>
@@ -631,7 +701,8 @@ const Quest= () => {
                                 variant="standard" 
                                 placeholder='Keepass, Lastpass, 1Password, Bitwarden'
                                 sx={{minWidth:'30%'}}
-                                {...register('passwManagExa')}
+                                value={form.passwdmg_name}
+                                onChange={(event) => updateForm({ passwdmg_name: event.target.value })}
                             />
                     </div>
                     {/* Checkbox to confirm the correctness of the provided information */}
@@ -645,7 +716,12 @@ const Quest= () => {
                     <div className='CWQ-1' name="Checkboxes">
                             <FormControlLabel 
                                 name='confirm_terms' 
-                                required control={<Checkbox {...register('submForm', { required: true })}/>} 
+                                control={
+                                    <Checkbox 
+                                        checked={form.submForm === true}
+                                        onChange={(event) => updateForm({ submForm: event.target.value })}
+                                    />
+                                } 
                                 label="Yes" 
                                 />
                     </div>
@@ -657,14 +733,11 @@ const Quest= () => {
                             className='SSO'
                             style={{minWidth: '20%', maxWidth:'70%', width:'20%'}}
                             type='submit'
-                            onClick={handleSubmit({data}, callApi)}
                         >
                             Submit
                         </button>
                     </div>
                     <br/><br/>
-                    {/* <p>{data}</p> */}
-                    <App />
                 </div>
             </div>
         </form>
