@@ -1,10 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import './../Main.css';
-import { useHistory } from 'react-router-dom';
-import FormDialog from '../components/formDialog';
+// import FormDialog from './../components/FormDialog';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+
+const Item = (props) => (
+    <button  
+        style={{backgroundColor:"transparent", borderColor:"transparent", cursor:'pointer', margin:'0', padding:'0'}}
+        type='button'
+        onClick={props.navigateQuest}
+    >
+        <li 
+            key={props.item._id} 
+                className='PGL_Item'
+        >
+                <p style={{fontSize:"22px", fontFamily:'NRR'}}>
+                    Questionnaire: {props.item.asset_name}
+                </p>
+        </li>
+    </button>
+);
 
 function ProfilePage() {
-    const [data, setData] = useState([]);
+    const [items, setItems] = useState([]);
+    const history = useHistory();
 
     useEffect(() => {
        async function fetchData() {
@@ -14,16 +32,28 @@ function ProfilePage() {
                   console.error(message);
                   return;
               }
-              const data = await response.json();
-              setData(data);
+              const items = await response.json();
+              setItems(items);
        }
        fetchData();
        return;
-    }, [data.length]);
+    }, [items.length]);
 
+    function navigateQuest() {
+        history.push(`/quest/${items._id}`);
+    }
 
-    const history = useHistory();
-    const handleClick = () => history.push(`/quest`);
+    function renderItems() {
+        return items.map((item) => {
+            return (
+                <Item 
+                    key={item._id}
+                    item={item}
+                    onClick={navigateQuest}
+                />
+            );
+        });
+    }
 
     return (
         <div className='ParentWrapper'>
@@ -34,11 +64,7 @@ function ProfilePage() {
                         <div className="Partition_1_W">
                             <div className="Grid1" style={{alignItems:'center'}}>
                                 <div name="ProfilePic">
-                                    {/* Profile Button insert here */}
-                                    {/* <button style={{backgroundColor:"transparent", borderColor:"transparent", cursor:'pointer', margin:'0', padding:'0'}}>
-                                        <AccountCircleIcon sx={{ fontSize: 50 }}/>
-                                    </button> */}
-                                    <FormDialog />
+                                    {/* <FormDialog /> */}
                                 </div>
                             </div>
                             <div className="Grid1">
@@ -54,7 +80,7 @@ function ProfilePage() {
                     </div>
                     <div className="Partition_2"/>
                     <div className="Partition_3">
-                        <h2 style={{fontWeight:"regular", fontSize:"30px", fontFamily:'NRL'}}>Questionnaire</h2>
+                        <h2 style={{fontWeight:"regular", fontSize:"30px", fontFamily:'NRL'}}>Profile</h2>
                     </div>
                 </div> 
                 <div className="RightSideOverlapping">
@@ -65,22 +91,7 @@ function ProfilePage() {
                             </div>
                             {/* Profile Questionnaire List */}
                             <ul className='P_Q_List'>
-                                {data.map(item=> (
-                                    // Profile Questionnaire List Item
-                                    <button  
-                                        style={{backgroundColor:"transparent", borderColor:"transparent", cursor:'pointer', margin:'0', padding:'0'}}
-                                        type='button'
-                                        onClick={handleClick}
-                                    >
-                                        <li 
-                                            key={item._id} 
-                                            className='PGL_Item'
-                                        >
-                                            <p style={{fontSize:"22px", fontFamily:'NRR'}}>Questionnaire: {item.asset_name}</p>
-                                            <link to="/quest"></link>
-                                        </li>
-                                    </button>
-                                ))}
+                                {renderItems()}
                             </ul>
                         </div>
                     </div>

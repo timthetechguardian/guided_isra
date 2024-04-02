@@ -82,7 +82,7 @@ const Quest= () => {
         additional_notes: "",
         personal_data_cat: [],
         confidential_business_data_cat: [],
-        no_data_cat: "",
+        no_data_cat: false,
         userkind: "",
         shared_user: "",
         usercred: "",
@@ -93,9 +93,8 @@ const Quest= () => {
         passwd_change: "",
         passwdmng_use: "",
         passwdmg_name: "",
-        submForm: "",
+        submForm: false,
     });
-    const [isNew, setIsNew] = useState(true);
     const params = useParams();
     const history = useHistory();
     // ???
@@ -103,7 +102,6 @@ const Quest= () => {
         async function fetchData() {
             const id = params.id?.toString() || undefined;
             if (!id) return;
-            setIsNew(false);
             const response = await fetch(
                 `http://localhost:5050/quest/${params.id.toString()}`
             );
@@ -139,15 +137,6 @@ const Quest= () => {
         const quest = { ...form };
         try {
             let response;
-            if (isNew) {
-                response = await fetch('http://localhost:5050/quest', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(quest),
-                });
-            } else {
                 response = await fetch(`http://localhost:5050/quest/${params.id}`, {
                     method: 'PATCH',
                     headers: {
@@ -155,7 +144,6 @@ const Quest= () => {
                     },
                     body: JSON.stringify(quest),
                 });
-            }
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -194,6 +182,7 @@ const Quest= () => {
         setdataCat(
             typeof value === 'string' ? value.split(',') : value,
         );
+        updateForm({ personal_data_cat: value });
     };
 
     const [confBus, setconfBus] = useState([]);
@@ -203,7 +192,8 @@ const Quest= () => {
         } = event;
         setconfBus(
             typeof value === 'string' ? value.split(',') : value,
-        );    
+        ); 
+        updateForm({ confidential_business_data_cat: value });   
     };
 
     // Checkbox Handler
@@ -211,9 +201,19 @@ const Quest= () => {
     const handleChecked = () => {
         setChecked((prev) => !prev);
         if (checked === true) {
-            updateForm({ no_data_cat: "None of the above" });
+            updateForm({ no_data_cat: true });
         } else {
-            updateForm({ no_data_cat: "" });
+            updateForm({ no_data_cat: false });
+        }
+    };
+
+    const [formed, setFormed] = useState(false);
+    const handleFormed = () => {
+        setFormed((prev) => !prev);
+        if (formed === true) {
+            updateForm({ submForm: true });
+        } else {
+            updateForm({ submForm: false });
         }
     };
 
@@ -248,6 +248,7 @@ const Quest= () => {
                             label="Write here"
                             placeholder='- <Name of the use case>: Explanation of the use case'
                             multiline
+                            required
                             maxRows={8}
                             variant="filled"
                             value={form.asset_description}
@@ -317,13 +318,12 @@ const Quest= () => {
                             labelId="demo-multiple-chip-label"
                             id="demo-multiple-chip"
                             multiple
-                            handleChange={handleChange}
                             input={
                                 <OutlinedInput 
                                     id="select-multiple-chip" 
                                     label="Personal Data Categories"
                                     value={form.personal_data_cat}
-                                    onChange={(event) => updateForm({ personal_data_cat: event.target.value })}
+                                    onChange={handleChange}
                                 />
                             }
                             renderValue={(selected) => (
@@ -367,12 +367,11 @@ const Quest= () => {
                         labelId="demo-multiple-chip-label"
                         id="demo-multiple-chip"
                         multiple
-                        onChange={handleChange1}
                         input={<OutlinedInput 
                             id="select-multiple-chip" 
                             label="Confidential Business Data Categories"
                             value={form.confidential_business_data_cat}
-                            onChange={(event) => updateForm({ confidential_business_data_cat: event.target.value })}
+                            onChange={handleChange1}
                             />}
                         renderValue={(selected) => (
                             <Box 
@@ -405,12 +404,9 @@ const Quest= () => {
                         &nbsp;&nbsp;
                             <FormControlLabel 
                                 control={
-                                    <Checkbox 
-                                        checked={form.no_data_cat === "None of the above"}
-                                        onChange={(event) => {
-                                            handleChecked()
-                                            updateForm({ no_data_cat: event.target.value })
-                                        }}
+                                    <Checkbox
+                                        value={form.no_data_cat}
+                                        onChange={handleChecked}
                                     />
                                 }   
                                 label="None of the above" 
@@ -437,6 +433,7 @@ const Quest= () => {
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 label='Yes or No'
+                                required
                                 defaultValue='User'
                                 input={
                                     <OutlinedInput 
@@ -470,6 +467,7 @@ const Quest= () => {
                                 <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
+                                required
                                 label='Yes or No'
                                 input={
                                     <OutlinedInput 
@@ -505,6 +503,7 @@ const Quest= () => {
                             label="Write here"
                             placeholder='- Describe your credentials here'
                             multiline
+                            required
                             maxRows={2}
                             variant="filled"
                             value={form.usercred}
@@ -535,6 +534,7 @@ const Quest= () => {
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 label='View Choices'
+                                required
                                 defaultValue='User'
                                 input={
                                     <OutlinedInput 
@@ -571,6 +571,7 @@ const Quest= () => {
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 label='Yes or No'
+                                required
                                 input={
                                     <OutlinedInput 
                                         id="select-multiple-chip"
@@ -604,6 +605,7 @@ const Quest= () => {
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 label='Yes or No'
+                                required
                                 input={
                                     <OutlinedInput
                                         id="select-multiple-chip"
@@ -621,7 +623,8 @@ const Quest= () => {
                             <TextField 
                                 id="outlined-basic" 
                                 label="Whats the name?" 
-                                variant="standard" 
+                                variant="standard"
+                                required 
                                 placeholder='­Microsoft Azure SSO, SMS, E-Mail, Code'
                                 value={form.mfa_name}
                                 onChange={(event) => updateForm({ mfa_name: event.target.value })}
@@ -646,6 +649,7 @@ const Quest= () => {
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 label='View Choices'
+                                required
                                 defaultValue='User'
                                 input={
                                     <OutlinedInput
@@ -681,6 +685,7 @@ const Quest= () => {
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 label='Yes or No'
+                                required
                                 input={
                                     <OutlinedInput
                                         id="select-multiple-chip"
@@ -698,7 +703,8 @@ const Quest= () => {
                             <TextField 
                                 id="outlined-basic" 
                                 label="Whats the name?" 
-                                variant="standard" 
+                                variant="standard"
+                                required
                                 placeholder='Keepass, Lastpass, 1Password, Bitwarden'
                                 sx={{minWidth:'30%'}}
                                 value={form.passwdmg_name}
@@ -718,8 +724,9 @@ const Quest= () => {
                                 name='confirm_terms' 
                                 control={
                                     <Checkbox 
-                                        checked={form.submForm === true}
-                                        onChange={(event) => updateForm({ submForm: event.target.value })}
+                                        required
+                                        value={form.submForm}
+                                        onChange={handleFormed}
                                     />
                                 } 
                                 label="Yes" 
@@ -733,6 +740,7 @@ const Quest= () => {
                             className='SSO'
                             style={{minWidth: '20%', maxWidth:'70%', width:'20%'}}
                             type='submit'
+                            onSubmit={onSubmit}
                         >
                             Submit
                         </button>

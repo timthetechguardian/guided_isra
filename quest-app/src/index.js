@@ -6,30 +6,46 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import Quest from './pages/Quest';
-import LoginPage from './pages/Login';
-import ProfilePage from './pages/Profile';
-import FAQ from './pages/faq';
-import Video from './pages/Intro';
-// import OutlinedCard from './components/card';
-// import { AlertProvider } from './alerts/useAlert';
+import App from './app';
+import { BrowserRouter } from 'react-router-dom/cjs/react-router-dom.min';
+
+import { PublicClientApplication, EventType } from '@azure/msal-browser';
+
+const pca = new PublicClientApplication({
+    auth: {
+        clientId: 'c86a0422-a4b6-46e9-bef9-7f3035a4cb8c',
+        authority: 'https://login.microsoftonline.com/975d243a-4e65-46df-b77f-8f73a893ca23',
+        redirectUri: '/'
+    }
+    });
+
+  // Default to using the first account if no account is active on page load
+if (!pca.getActiveAccount() && pca.getAllAccounts().length > 0) {
+  // Account selection logic is app dependent. Adjust as needed for different use cases.
+  pca.setActiveAccount(pca.getAllAccounts()[0]);
+}
+
+// Optional - This will update account state if a user signs in from another tab or window
+pca.enableAccountStorageEvents();
+
+// Listen for sign-in event and set active account
+pca.addEventCallback((event) => {
+  if (event.eventType === EventType.LOGIN_SUCCESS && event.payload.account) {
+      const account = event.payload.account;
+      pca.setActiveAccount(account);
+  }
+});
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.StrictMode>
-    <Router>
-      <Switch>
-        <Route path="/profile" component={ProfilePage} />
-        <Route path="/login" component={LoginPage} />
-        <Route path="/quest" component={Quest}/>
-        <Route path="/faq" component={FAQ} />
-        <Route path="/intro" component={Video} />
-      </Switch>
-    </Router>
+    <BrowserRouter>
+      <App msalInstance={ pca }/>
+    </BrowserRouter>
   </React.StrictMode>
 );
 
