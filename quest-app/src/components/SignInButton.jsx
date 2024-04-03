@@ -1,6 +1,7 @@
 import './../Main.css';
 
 import { useMsal } from "@azure/msal-react";
+import { Button } from '@mui/material';
 
 export const SignInButton = () => {
     const {instance} = useMsal();
@@ -14,6 +15,6 @@ export const SignInButton = () => {
     }
 
     return(
-        <button className="SSO" onClick={ handleSignIn }>Single-Sign-On</button>
+        <div onClick={handleSignIn}>Single-Sign-On</div>
     )
 };

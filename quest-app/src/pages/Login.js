@@ -1,34 +1,30 @@
 import './../Main.css';
 import wallp from './../img/peri_wallp.jpg';
+
 import { SignInButton as SSO } from '../components/SignInButton';
 
+
 export default function Login() {
+
   return (
     <div className="App">
-      <div className="MainContainer">
-        <div className="Column">
-          <div className="Left-half" style={{ backgroundImage: `url(${wallp})`}}>
-            <div className="Wrapper">
-              <div className="W_Placeholder"/>
-                <div className="OverlayText">
-                  <h1>Welcome to...</h1><p/>
-                  <h2>The Risk-Assessment self-guidance portal</h2>
-                </div>
-            </div>
-          </div>
-          <div className="Right-half">
-            <div className="Wrapper">
-              <div className="W_Placeholder"/>
-                <div className="OverlayText">
-                  <h1>Login</h1><p/>
-                  <h2>Welcome! Your account has already been created for you.</h2>
-                </div>
-                <div className="W_Mid_Placeholder"/>
-                  <SSO/>
-            </div>
-          </div>
-        </div>
+      <div className='ContentLeft'/>
+      <div className='Logo' />
+      <div className='LogoTitle'><h1>Sign in</h1></div>
+      <div className='ContentRight'/>
+      <div className="Title">
+            rasPERI
       </div>
+      {/* <div className="Subtitle">
+            risk-assessmeent self-service PERI - tool
+      </div> */}
+      <div className="Text">
+            <p style={{fontSize: "16px", fontWeight: "500"}}>Use your Microsoft Peri Account</p>
+      </div>
+      <div className="button-17">
+        <SSO />
+      </div>
+
     </div>
   );
 }

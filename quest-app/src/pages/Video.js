@@ -1,5 +1,6 @@
 import React, { useState, UseEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
+import '../history';
 
 const VideoPlayer = ({ videoSources, onBack, onNext }) => {
 
@@ -65,19 +66,25 @@ const VideoPlayer = ({ videoSources, onBack, onNext }) => {
 };
 
 const Video = () => {
-  const history = useHistory();
-
   const videoSources = [
-    '/vid/samplevid.mp4', 
-    '/vid/samplevid.mpeg',
-    '/vid/samplevid.ogv',
-    '/vid/samplevid.webm', // Note: AVI is generally not supported for direct browser playback
+    './../vid/samplevid.mp4',
+    './../vid/samplevid.mpeg',
+    './../vid/samplevid.ogv',
+    './../vid/samplevid.webm', // Note: AVI is generally not supported for direct browser playback
   ];
 
-  const handleBack = () => history.push('/login');
+  class Chaaarge extends React.Component {
+    pushForward() { 
+        this.props.history.push("/profile"); 
+    } 
+  }
 
-  const handleNext = () => history.push('/profile');
+  const forRohan = withRouter(Chaaarge);
 
+  onNext = () => {
+    forRohan();
+  }
+  
   return (
     <VideoPlayer
       videoSources={videoSources}

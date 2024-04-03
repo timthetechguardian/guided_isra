@@ -1,105 +1,97 @@
 @font-face {
-    font-family: 'NRR';
-    src: local('Neue Regrade'), url(./fonts/Neue\ Regrade/Neue\ Regrade\ Regular.otf) format('opentype');
+    font-family: 'UniBlack';
+    src: local('Univers'), url(./fonts/Univers/UniversLTStd-Bold.otf) format('opentype');
 }
 
 @font-face {
-    font-family: 'NRL';
-    src: local('Neue Regrade'), url(./fonts/Neue\ Regrade/Neue\ Regrade\ Light.otf) format('opentype');
-}
-
-@font-face {
-    font-family: 'NRB';
-    src: local('Neue Regrade'), url(./fonts/Neue\ Regrade/Neue-Regrade\ Bold.otf) format('opentype');
+    font-family: 'UniLight';
+    src: local('Univers'), url(./fonts/Univers/UniversLTStd.otf) format('opentype');
 }
 
 :root {
     --debugHelper: 2px solid rgb(33, 168, 6);
+    font-size: 20px;
 }
 
 /* var(--debugHelper) */
-
-.Column {
-    max-width: 1920px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.Left-half {
-    width: 50%;
-    height: 100vh;
+.App {
+    display: grid;
+    max-height: 100vh;
+    grid-template-columns: repeat(100, 1fr [col]);
+    grid-template-rows: repeat(100, 1fr [row]);
     background-image: url(./img/peri_wallp.jpg);
-    background-position: right center;
+    background-size: cover;
     background-repeat: no-repeat;
-    background-size: auto 100vh;
 }
 
-.Wrapper {
-    position: relative;
-    width: calc(80% / 2);
-    height: 100%;
-    margin: 0 auto; /* Center the Wrapper to the width of .Left-half */
-    background-color: transparent;
-    border: none;
-    z-index: 1; /* Bring the Wrapper into the foreground */
+/* Login Page */
+.ContentLeft {
+    grid-column: 29 / 51;
+    grid-row: 30 /span 40;
+    background-color: #ffffff;
+    border-top-left-radius: 40px;
+    border-bottom-left-radius: 40px;
+    /* border: var(--debugHelper); */
+    z-index: 1;
 }
 
-.W_Placeholder {
-    position: relative;
-    height: calc(1/6 * 100vh);
-    width: 100%;
+.Logo {
+    grid-column: 31 / 36;
+    grid-row: 34 / span 5;
+    z-index: 2;
+    height: 50px;
+    background-image: url(./img/Peri-logo.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    /* border: var(--debugHelper); */
 }
 
-.W_Mid_Placeholder {
-    position: relative;
-    height: calc(1/4 * 100vh);
-    width: 100%;
-}
-
-.OverlayText {
-    text-align: left;
-    line-height: 0; /* Set line spacing to 0 */
-    
-}
-
-h1 {
-    font-size: 2em;
-    font-weight: 500;
-    margin-bottom: 1em;
-}
-
-h2 {
-    font-size: 1em;
+.LogoTitle {
+    grid-column: 31 / 40;
+    grid-row: 38 / span 3;
+    z-index: 2;
+    font-family: UniLight;
     font-weight: 200;
-    margin: 0%;
-    line-height: 1;
 }
+    
 
-.Right-half {
-    width: 50%;
-    height: 100vh;
-    background-position: left center;
-    background-repeat: no-repeat;
-}
-
-.SSO {
-    background-color: #0078D4;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    width: 100%; /* Set width to 100% */
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.SSO:hover {
-    background-color: #005A9E;
+.ContentRight {
+    grid-column: 51 / 73;
+    grid-row: 30 / span 40;
+    background-color: #ffffff;
+    border-top-right-radius: 40px;
+    border-bottom-right-radius: 40px;
+    /* border: var(--debugHelper); */
+    z-index: 1;
     
 }
+
+.Title {
+    grid-column: 53 / 75;
+    grid-row: 34 / span 3;
+    z-index: 2;
+    font-family: UniLight;
+    font-weight: lighter;
+    font-size: 40px;
+    color: #DC0032;
+}
+
+.Subtitle {
+    grid-column: 53 / 75;
+    grid-row: 37 / span 3;
+    z-index: 2;
+    font-family: UniLight;
+    font-weight: lighter;
+    font-size: 20px;
+    color: #DC0032;
+}
+
+.Text {
+    grid-column: 53 / 75;
+    grid-row: 57 / span 3;
+    z-index: 2;
+}
+
 
 
 /* Profile Page */
@@ -170,21 +162,23 @@ h2 {
 
 /* CSS */
 .button-17 {
+    grid-column: 53 / 70;
+    grid-row: 62 / span 2;
+    z-index: 3;
   align-items: center;
   appearance: none;
-  background-color: #fff;
   border-radius: 24px;
   border-style: none;
-  box-shadow: rgba(0, 0, 0, .2) 0 3px 5px -1px,rgba(0, 0, 0, .14) 0 6px 10px 0,rgba(0, 0, 0, .12) 0 1px 18px 0;
+  background-color: #076dbb;
+  box-shadow: rgba(121, 121, 121, 0.2) 0 3px 5px -1px,rgba(121, 121, 121, 0.14) 0 6px 10px 0,rgba(121, 121, 121, 0.12) 0 1px 18px 0;
   box-sizing: border-box;
-  color: #3c4043;
+  color: #f7f7f7;
   cursor: pointer;
   display: inline-flex;
   fill: currentcolor;
-  font-family: "NRL";
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 500;
-  height: 48px;
+  height: 52px;
   justify-content: center;
   letter-spacing: .25px;
   line-height: normal;
@@ -200,12 +194,11 @@ h2 {
   touch-action: manipulation;
   width: auto;
   will-change: transform,opacity;
-  z-index: 0;
 }
 
 .button-17:hover {
-  background: #F6F9FE;
-  color: #174ea6;
+  background: #0477cf;
+  color: #f7f7f7;
 }
 
 .button-17:active {
@@ -218,25 +211,6 @@ h2 {
   border: 2px solid #7e7e7e;
 }
 
-.button-17:not(:disabled) {
-  box-shadow: rgba(60, 64, 67, .3) 0 1px 3px 0, rgba(60, 64, 67, .15) 0 4px 8px 3px;
-}
-
-.button-17:not(:disabled):hover {
-  box-shadow: rgba(60, 64, 67, .3) 0 2px 3px 0, rgba(60, 64, 67, .15) 0 6px 10px 4px;
-}
-
-.button-17:not(:disabled):focus {
-  box-shadow: rgba(60, 64, 67, .3) 0 1px 3px 0, rgba(60, 64, 67, .15) 0 4px 8px 3px;
-}
-
-.button-17:not(:disabled):active {
-  box-shadow: rgba(60, 64, 67, .3) 0 4px 4px 0, rgba(60, 64, 67, .15) 0 8px 12px 6px;
-}
-
-.button-17:disabled {
-  box-shadow: rgba(60, 64, 67, .3) 0 1px 3px 0, rgba(60, 64, 67, .15) 0 4px 8px 3px;
-}
 
 .Partition_2 {
     width: 8vh;

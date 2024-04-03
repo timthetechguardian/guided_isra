@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './../Main.css';
 // import FormDialog from './../components/FormDialog';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+// import '.history';
+import { useHistory } from 'react-router-dom';
 
 const Item = (props) => (
     <button  
@@ -13,7 +14,7 @@ const Item = (props) => (
             key={props.item._id} 
                 className='PGL_Item'
         >
-                <p style={{fontSize:"22px", fontFamily:'NRR'}}>
+                <p style={{fontSize:"22px", fontFamily:'UniLight'}}>
                     Questionnaire: {props.item.asset_name}
                 </p>
         </li>
@@ -22,7 +23,6 @@ const Item = (props) => (
 
 function ProfilePage() {
     const [items, setItems] = useState([]);
-    const history = useHistory();
 
     useEffect(() => {
        async function fetchData() {
@@ -39,9 +39,14 @@ function ProfilePage() {
        return;
     }, [items.length]);
 
-    function navigateQuest() {
-        history.push(`/quest/${items._id}`);
+    const history = useHistory();
+    // function navigateQuest() {
+    //     history.push(`/quest/${items._id}`);
+    // }
+    const navigateQuest = () => {
+        history.push(`/quest/`);
     }
+    
 
     function renderItems() {
         return items.map((item) => {
@@ -54,6 +59,8 @@ function ProfilePage() {
             );
         });
     }
+
+    
 
     return (
         <div className='ParentWrapper'>
@@ -69,7 +76,7 @@ function ProfilePage() {
                             </div>
                             <div className="Grid1">
                                 <div className="ProfileName">
-                                    <h2 style={{fontWeight:"light", fontSize:"24px", fontFamily:'NRL'}}>Tim Stein</h2>
+                                    <h2 style={{fontWeight:"light", fontSize:"24px", fontFamily:'UniLight'}}>Tim Stein</h2>
                                 </div>
                             </div>
                             <div className="Grid1"/>
@@ -80,7 +87,7 @@ function ProfilePage() {
                     </div>
                     <div className="Partition_2"/>
                     <div className="Partition_3">
-                        <h2 style={{fontWeight:"regular", fontSize:"30px", fontFamily:'NRL'}}>Profile</h2>
+                        <h2 style={{fontWeight:"light", fontSize:"30px", fontFamily:'UniLight'}}>Profile</h2>
                     </div>
                 </div> 
                 <div className="RightSideOverlapping">
