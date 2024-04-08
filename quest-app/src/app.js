@@ -19,7 +19,7 @@ export default function App({ msalInstance }) {
             <Switch>
                 <Route path="/profile" component={ProfilePage} />
                 {/* <Route path="/login" component={LoginPage} /> */}
-                <Route path="/quest" component={Quest}/>
+                <Route path="/quest/:id" component={Quest}/>
                 <Route path="/faq" component={FAQ} />
                 <Route path="/video" component={Video} />
                 <Route path="/" component={SignIn} />

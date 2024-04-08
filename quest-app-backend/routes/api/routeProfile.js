@@ -5,35 +5,35 @@ import router from './routeQuest.js';
 
 const router1 = express.Router();
 
+router1.get('/', async (req, res) => {
+     let collection = await db.collection("questionnaires");
+     let results = 
+     res.send(results).status(200);
+});
+
+router1.get('/:id', async (req, res) => {
+    let collection = await db.collection("questionnaires");
+     let query = { _id: new ObjectId(req.params.id) };
+     let result = await collection.findOne(query);
+
+    if (!result) res.send("No result found!").status(404);
+     else res.send(result).status(200);
+});
+
 // router1.get('/', async (req, res) => {
 //     let collection = await db.collection("questionnaires");
-//     let results = 
-//     res.send(results).status(200);
-// });
-
-// router1.get('/:id', async (req, res) => {
-//     let collection = await db.collection("questionnaires");
 //     let query = { _id: new ObjectId(req.params.id) };
-//     let result = await collection.findOne(query);
-
-//     if (!result) res.send("No result found!").status(404);
-//     else res.send(result).status(200);
-// });
-
-router1.get('/', async (req, res) => {
-    let collection = await db.collection("questionnaires");
-    let query = { _id: new ObjectId(req.params.id) };
-    const dataEmail = req.body.software_owner.e_mail;
-    const userEmail = req.headers['username'];
-    if (dataEmail === userEmail) {
-      router.get('/', async (req, res) => {
-        let result = await collection.find(query && {"software_owner.e_mail": userEmail});
-        res.send(result).status(200);
-      });
-      } else {
-        res.send("");
-    }
-  })
+//     const dataEmail = req.body.software_owner.e_mail;
+//     const userEmail = req.headers['username'];
+//     if (dataEmail === userEmail) {
+//       router.get('/', async (req, res) => {
+//         let result = await collection.find(query && {"software_owner.e_mail": userEmail});
+//         res.send(result).status(200);
+//       });
+//       } else {
+//         res.send("");
+//     }
+//   })
 
 
 router1.patch("/:id", async (req, res) => {

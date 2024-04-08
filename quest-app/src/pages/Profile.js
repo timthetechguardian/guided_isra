@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './../Main.css';
 // import FormDialog from './../components/FormDialog';
-import { useHistory, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useMsal } from "@azure/msal-react";
 
 
@@ -34,27 +34,7 @@ function ProfilePage() {
         if (currentAccount) {
             setUsername(currentAccount.username);
         }
-        async function askUser() {
-            const response = await fetch('http://localhost:5050/ask', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'username': currentAccount.username
-                },
-                body: JSON.stringify({
-                    "software_owner": {
-                        "e_mail": currentAccount.username
-                    }
-                })
-            });
-            if (!response.ok) {
-                const message = `An error occured: ${response.statusText}`;
-                console.error(message);
-                return;
-            }
-            const items = await response.json();
-            setItems(items);
-        }
+        
         async function fetchData() {
             const response = await fetch('http://localhost:5050/profile');
             if (!response.ok) {

@@ -96,12 +96,13 @@ const Quest= () => {
         passwdmg_name: "",
         submForm: false,
     });
-    const params = useParams();
+    let params = useParams();
     const history = useHistory();
     // ???
     useEffect(() => {
         async function fetchData() {
-            const id = params.id?.toString() || undefined;
+            let id = params.id?.toString() || undefined;
+            console.log(id);
             if (!id) return;
             const response = await fetch(
                 `http://localhost:5050/quest/${params.id.toString()}`
@@ -138,7 +139,8 @@ const Quest= () => {
         const formquest = { ...form };
         try {
             let response;
-                response = await fetch(`http://localhost:5050/quest/${params.id}`, {
+            console.log(params.id.toString());
+                response = await fetch(`http://localhost:5050/quest/${params.id.toString()}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
