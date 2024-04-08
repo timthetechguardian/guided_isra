@@ -6,6 +6,12 @@ import { ObjectId } from 'mongodb';
 
 const router = express.Router();
 
+router.get('/', async (req, res) => {
+  let collection = await db.collection("questionnaires");
+  let results = await collection.find({}).toArray();
+  res.send(results).status(200);
+});
+
 router.get('/:id', async (req, res) => {
     let collection = await db.collection("questionnaires");
     let query = { _id: new ObjectId(req.params.id) };
@@ -45,7 +51,7 @@ router.patch("/:id", async (req, res) => {
         },
       };
       let collection = await db.collection("questionnaires");
-      let result = await collection.update(query, updates);
+      let result = await collection.updateOne(query, updates);
       res.send(result).status(200);
     } catch (err) {
       console.error(err);

@@ -77,6 +77,7 @@ const Quest= () => {
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     const [form, setForm] = useState({
+        _id: "",
         asset_name: "",
         asset_description: "",
         additional_notes: "",
@@ -134,7 +135,7 @@ const Quest= () => {
     //                    Argument missing
     async function onSubmit(event) {
         event.preventDefault();
-        const quest = { ...form };
+        const formquest = { ...form };
         try {
             let response;
                 response = await fetch(`http://localhost:5050/quest/${params.id}`, {
@@ -142,7 +143,7 @@ const Quest= () => {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(quest),
+                    body: JSON.stringify(formquest),
                 });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -169,7 +170,7 @@ const Quest= () => {
                 passwdmg_name: "",
                 submForm: false,
             });
-            history.push("/");
+            history.push("/profile");
         }
     }
     
