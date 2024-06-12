@@ -7,7 +7,7 @@ const router1 = express.Router();
 
 router1.get('/', async (req, res) => {
      let collection = await db.collection("questionnaires");
-     let results = 
+     let results = await collection.find({}).toArray();
      res.send(results).status(200);
 });
 

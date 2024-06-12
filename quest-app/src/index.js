@@ -17,7 +17,7 @@ const pca = new PublicClientApplication({
     auth: {
         clientId: 'c86a0422-a4b6-46e9-bef9-7f3035a4cb8c',
         authority: 'https://login.microsoftonline.com/975d243a-4e65-46df-b77f-8f73a893ca23',
-        redirectUri: '/'
+        redirectUri: 'http://localhost:5050'
     }
     });
 
