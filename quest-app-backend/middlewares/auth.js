@@ -1,18 +1,16 @@
 import express from 'express';
 import axios from 'axios';
-import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import session from 'express-session';
-import { ConfidentialClientApplication } from '@azure/msal-node';
-
-dotenv.config();
+import { PublicClientApplication } from '@azure/msal-browser';
+import { msalConfig } from '../auth-config.js';
 
 const app = express();
 
 // MongoDB connection
 const dbURI = process.env.DATABASE_URI;
 mongoose.connect(dbURI).then(() => {
-    console.log("Successfully connected to MongoDB!");
+    console.log("Successfully connected to MongoDB! New query attempt");
 }).catch((error) => {
     console.error("MongoDB connection error:", error);
 });
@@ -20,28 +18,18 @@ mongoose.connect(dbURI).then(() => {
 const userSchema = new mongoose.Schema({ email: String });
 const User = mongoose.model('users', userSchema);
 
-// Session middleware
-app.use(session({ secret: 'your-secret-key', resave: false, saveUninitialized: true }));
+// Session configuration
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+}));
 
 // MSAL configuration
-const msalConfig = {
-    auth: {
-        clientId: process.env.CLIENT_ID,
-        authority: `https://login.microsoftonline.com/${process.env.TENANT_ID}`,
-        clientSecret: process.env.CLIENT_SECRET,
-    },
-    system: {
-        loggerOptions: {
-            loggerCallback(loglevel, message, containsPii) {
-                console.log(message);
-            },
-            piiLoggingEnabled: false,
-            logLevel: 2,
-        },
-    },
-};
 
-const pca = new ConfidentialClientApplication(msalConfig);
+
+const pca = new PublicClientApplication(msalConfig);
 
 // Middleware to check if user is authenticated
 export function ensureAuthenticated(req, res, next) {
@@ -52,26 +40,6 @@ export function ensureAuthenticated(req, res, next) {
     }
 }
 
-// Root route to handle the "/" path
-app.get('/', (req, res) => {
-    res.send('Server is running. Navigate to /login to start the authentication process.');
-});
-
-// Login route
-app.get('/login', async (req, res) => {
-    const authCodeUrlParameters = {
-        scopes: ["user.read"],
-        redirectUri: process.env.REDIRECT_URI,
-    };
-
-    try {
-        const authUrl = await pca.getAuthCodeUrl(authCodeUrlParameters);
-        res.json({ authUrl });
-    } catch (error) {
-        console.log(`Error: ${error}`);
-        res.status(500).send(error);
-    }
-});
 
 app.get('/redirect', async (req, res) => {
     const tokenRequest = {
@@ -83,6 +51,7 @@ app.get('/redirect', async (req, res) => {
     try {
         const response = await pca.acquireTokenByCode(tokenRequest);
         req.session.accessToken = response.accessToken;
+        console.log('Access token set in session:', req.session.accessToken);
         res.redirect('/auth-azure');
     } catch (error) {
         console.log(`Error: ${error}`);
@@ -94,10 +63,9 @@ app.get('/redirect', async (req, res) => {
 async function auth_azure(req, res, next) {
     try {
         if (!req.session.accessToken) {
-            return res.status(401).send('User is not authenticated');
+            throw new Error('Access token is undefined');
         }
 
-        // Make a GET request to the Azure Graph API using the access token
         const response = await axios.get('https://graph.microsoft.com/v1.0/me', {
             headers: {
                 Authorization: `Bearer ${req.session.accessToken}`
@@ -134,7 +102,7 @@ async function auth_azure(req, res, next) {
     }
 }
 
-
+app.get('/auth-azure', ensureAuthenticated, auth_azure);
 
 export default auth_azure;
 

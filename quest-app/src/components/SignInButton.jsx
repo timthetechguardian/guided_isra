@@ -1,22 +1,27 @@
 import './../Main.css';
 import { useMsal } from "@azure/msal-react";
+import { loginRequest } from '../../../quest-app-backend/auth-config';
 
 export const SignInButton = () => {
     const { instance } = useMsal();
 
-    const handleSignIn = async () => {
-        try {
-            // Initiate the login process by calling the backend login route
-            const response = await fetch('http://localhost:5050/login');
-            if (response.ok) {
-                const data = await response.json();
-                window.location.href = data.authUrl;  // Redirect to the Azure AD login URL
-            } else {
-                console.error('Network response was not ok.');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
+    const handleSignIn = () => {
+        instance
+            .loginRedirect({
+                ...loginRequest,
+            })
+            .then(() => {
+                // Make a GET request to start the backend authentication flow
+                fetch("http://localhost:5050/api/redirect")
+                    .then((response) => {
+                        // Handle the response
+                        console.log(response);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            })
+            .catch((error) => console.log(error));
     };
 
     return (
